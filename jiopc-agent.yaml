@@ -1,0 +1,134 @@
+
+test_agent:
+  log_dir: ~/.local/share/jiopc/agent/
+
+  execution_order:
+  - B
+  - A
+  - C
+  
+
+web_apps:
+  - name: Chess.com
+    desktop_file :  
+    url: https://www.chess.com
+    timeout: 15
+    load_threshold_ms: 2000
+
+    checks:
+      - type: role_name
+        role: heading
+        value: "Play Chess Online on the #1"
+
+
+  - name : JioAiCloud
+    url: https://www.jioaicloud.com
+    timeout : 15
+    load_threshold_ms: 2000
+
+
+    checks:
+      - type : role_name
+        role : heading
+        value : "Experience JioAICloud"
+
+
+  - name : ChatGPT
+    url: https://www.chatgpt.com
+    timeout : 15
+    load_threshold_ms: 2000 
+
+
+    checks:
+      - type : role_name
+        role : textbox
+        value: "Chat with ChatGPT"
+
+
+
+native_apps:
+  - app_name : mpv Media Player
+
+    process_name: mpvmediaplayer
+    timeout: 10
+
+  - app_name : audacious
+    process_name: audacious
+    timeout : 10
+    
+  # - app_name : FeatherNotes
+  #   process_name: feathernotes
+  #   timeout : 10
+  
+  # - app_name : Firefox
+  #   process_name : firefox
+  #   timeout : 10
+  
+  # - app_name : LibreOffice Calc
+  #   process_name: LibreOffice
+  #   timeout: 10
+
+  # - app_name : LibreOffice Math
+  #   process_name: math
+  #   timeout: 10
+
+  # - app_name : LibreOffice Impress
+  #   process_name: libreimpress
+  #   timeout: 10
+
+  # - app_name : Calculator
+  #   process_name: calculator
+  #   timeout: 10
+
+  # - app_name : Thunar File Manager
+  #   process_name: file_manager
+  #   timeout: 10
+
+
+  
+  - app_name : Text Editor  
+    process_name: text editor
+    timeout: 10
+
+
+desktop_presence:
+  - name: duolingo
+    expected_category: Education
+    expected_folder: Education
+  
+  - name : jioaicloud
+    expected_category: Productivity
+    expected_folder: Productivity
+    
+     
+  - name: Coursera
+    expected_category: Education
+    expected_folder: Education
+   
+  - name: Khan Academy
+    expected_category: Education
+    expected_folder: Education
+    
+  - name : sunoai
+    expected_category: Productivity
+    expected_folder: Productivity
+    
+  - name: elevenlabs
+    expected_category: Productivity
+    expected_folder: Productivity
+   
+  - name: perplexityai
+    expected_category: Education
+    expected_folder: Education
+    
+  - name : lovable
+    expected_category: Productivity
+    expected_folder: Productivity
+
+  - name : chess.com
+    expected_category: Games
+    expected_folder: Games
+
+  
+
+  

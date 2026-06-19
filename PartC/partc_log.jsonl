@@ -1,0 +1,10 @@
+{"timestamp": "2026-06-18T17:59:35.809945", "component": "C", "test_name": "duolingo", "result": "MISPLACED", "duration_ms": 0.0091, "detail_message": "Expected category=Education, Actual categories=['Utilities']"}
+{"timestamp": "2026-06-18T17:59:35.809994", "component": "C", "test_name": "jioaicloud", "result": "PASS", "duration_ms": 0.0033, "detail_message": "App exists in expected Category and expected Desktop Folder"}
+{"timestamp": "2026-06-18T17:59:35.810004", "component": "C", "test_name": "Coursera", "result": "PASS", "duration_ms": 0.0021, "detail_message": "App exists in expected Category and expected Desktop Folder"}
+{"timestamp": "2026-06-18T17:59:35.810010", "component": "C", "test_name": "Khan Academy", "result": "PASS", "duration_ms": 0.0013, "detail_message": "App exists in expected Category and expected Desktop Folder"}
+{"timestamp": "2026-06-18T17:59:35.810016", "component": "C", "test_name": "sunoai", "result": "PASS", "duration_ms": 0.0022, "detail_message": "App exists in expected Category and expected Desktop Folder"}
+{"timestamp": "2026-06-18T17:59:35.810021", "component": "C", "test_name": "elevenlabs", "result": "MISSING", "duration_ms": 0.0014, "detail_message": ".desktop does not exist on System"}
+{"timestamp": "2026-06-18T17:59:35.810027", "component": "C", "test_name": "perplexityai", "result": "MISPLACED", "duration_ms": 0.0019, "detail_message": "Expected category=Education, Actual categories=['Productivity']"}
+{"timestamp": "2026-06-18T17:59:35.810031", "component": "C", "test_name": "lovable", "result": "PASS", "duration_ms": 0.0012, "detail_message": "App exists in expected Category and expected Desktop Folder"}
+{"timestamp": "2026-06-18T17:59:35.810036", "component": "C", "test_name": "chess.com", "result": "MISPLACED", "duration_ms": 0.0016, "detail_message": "Expected category=Games, Actual categories=['Game']"}
+{"timestamp": "2026-06-18T17:59:35.810039", "component": "C", "type": "SUMMARY", "passed": 5, "misplaced": 3, "missing": 1}

@@ -1,0 +1,68 @@
+PartA:
+
+  - name: Chess.com
+    desktop_file :  
+    url: https://www.chess.com
+    timeout: 15
+    load_threshold_ms: 2000
+
+    checks:
+      - type: role_name
+        role: heading
+        value: "Play Chess Online on the #1"
+
+
+  - name : JioAiCloud
+    url: https://www.jioaicloud.com
+    timeout : 15
+    load_threshold_ms: 2000
+
+
+    checks:
+      - type : role_name
+        role : heading
+        value : "Experience JioAICloud"
+
+
+  - name : ChatGPT
+    url: https://www.chatgpt.com
+    timeout : 15
+    load_threshold_ms: 2000 
+
+
+    checks:
+      - type : role_name
+        role : textbox
+        value: "Chat with ChatGPT"
+        
+    
+
+  # - name: Lovable
+  #   url: https://lovable.dev
+  #   timeout: 15
+
+  #   checks:
+  #     - type: role
+  #       value: textbox
+
+  #     - type: text
+  #       value: Build something Lovable
+
+  # - name: YouTube
+  #   url: https://youtube.com
+  #   timeout: 15
+
+  #   checks:
+  #     - type: role
+  #       value: searchbox
+
+  # - name: Coursera
+  #   url: https://coursera.org
+  #   timeout: 15
+
+  #   checks:
+  #     - type: role
+  #       value: link
+
+  #     - type: text
+  #       value: Learn without limits

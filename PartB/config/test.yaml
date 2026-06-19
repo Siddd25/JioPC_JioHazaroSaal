@@ -1,0 +1,44 @@
+PartB:
+  - app_name : mpv Media Player
+
+    process_name: mpvmediaplayer
+    timeout: 10
+
+  - app_name : audacious
+    process_name: audacious
+    timeout : 10
+    
+  - app_name : FeatherNotes
+    process_name: feathernotes
+    timeout : 10
+  
+  - app_name : Firefox
+    process_name : firefox
+    timeout : 10
+  
+  - app_name : LibreOffice Calc
+    process_name: LibreOffice
+    timeout: 10
+
+  - app_name : LibreOffice Math
+    process_name: math
+    timeout: 10
+
+  - app_name : LibreOffice Impress
+    process_name: libreimpress
+    timeout: 10
+
+  - app_name : Calculator
+    process_name: calculator
+    timeout: 10
+
+  - app_name : Thunar File Manager
+    process_name: file_manager
+    timeout: 10
+
+
+  
+  - app_name : Text Editor  
+    process_name: text editor
+    timeout: 10
+  
