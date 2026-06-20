@@ -3,15 +3,19 @@ from PartA.PART_A import PartATester
 from PartB.PART_B import PartBTester
 from PartC.PART_C import PartCTester
 from utils.inventory import InventoryBuilder
-
+from utils.email_sender import EmailSender
 from pathlib import Path
 from datetime import datetime
-
+from analyse import LogAnalyzer
 import argparse
 import yaml
 import time
 import sys
+import psutil
+import os
+import json
 
+import re
 
 class CoreRunner:
 
@@ -28,6 +32,7 @@ class CoreRunner:
             parents=True,
             exist_ok=True
         )
+
         
 
 
@@ -48,11 +53,16 @@ class CoreRunner:
         self.all_desktop_apps = self.inventory_builder.CreateDesktopDatabase()
         self.desktop_folder_apps = self.inventory_builder.Desktop_Directory_Apps()
 
+        self.process = psutil.Process(os.getpid())
+        self.peak_ram_mb = 0
+
     def run(self, part=None):
 
         print("Test Agent is Running......")
 
         start_time = time.time()
+
+        self.update_peak_ram()
 
         execution_order = self.config['test_agent']["execution_order"]
 
@@ -81,18 +91,20 @@ class CoreRunner:
                     part_a_summary = parts["A"].run(
                         part_configs["A"]
                     )
+                    self.update_peak_ram()
 
                 elif p == "B":
 
                     part_b_summary = parts["B"].run(
-                        part_configs["B"], self.all_desktop_apps, self.desktop_folder_apps
-                    )
+                        part_configs["B"], self.all_desktop_apps)
+                    self.update_peak_ram()
 
                 elif p == "C":
 
                     part_c_summary = parts["C"].run(
                         part_configs["C"], self.all_desktop_apps, self.desktop_folder_apps
                     )
+                    self.update_peak_ram()
 
 
 
@@ -118,22 +130,26 @@ class CoreRunner:
             part_a_summary = parts["A"].run(
                 part_configs["A"]
             )
+            self.update_peak_ram()
 
         elif part == "B":
 
             print("Running Part B")
 
             part_b_summary = parts["B"].run(
-                part_configs["B"], self.all_desktop_apps, self.desktop_folder_apps
+                part_configs["B"], self.all_desktop_apps
             )
+            self.update_peak_ram()
 
         elif part == "C":
 
             print("Running Part C")
 
             part_c_summary = parts["C"].run(
-                part_configs["C"], self.all_desktop_apps, self.desktop_folder_apps
+                part_configs["C"], self.all_desktop_apps,self.desktop_folder_apps
+                    
             )
+            self.update_peak_ram()
 
         total_time = round(
             time.time() - start_time,
@@ -156,10 +172,54 @@ class CoreRunner:
             + part_c_summary.get("MISPLACED", 0)
         )
 
+       
+
+        final_summary = {
+    "type": "FINAL_SUMMARY",
+    "timestamp": datetime.now().isoformat(),
+    "total_runtime_sec": total_time,
+
+    "component_A": part_a_summary,
+    "component_B": part_b_summary,
+    "component_C": part_c_summary,
+
+    "total_tests":
+        part_a_summary.get("TOTAL", 0)
+        + part_b_summary.get("TOTAL", 0)
+        + part_c_summary.get("TOTAL", 0),
+
+    "total_pass":
+        part_a_summary.get("PASS", 0)
+        + part_b_summary.get("PASS", 0)
+        + part_c_summary.get("PASS", 0),
+
+    "total_fail":
+        part_a_summary.get("FAIL", 0)
+        + part_b_summary.get("FAIL", 0),
+
+    "total_blocked":
+        part_a_summary.get("BLOCKED", 0),
+
+    "total_degraded":
+        part_b_summary.get("DEGRADED", 0),
+
+    "total_missing":
+        part_c_summary.get("MISSING", 0),
+
+    "total_misplaced":
+        part_c_summary.get("MISPLACED", 0)
+}       
+        self.logger.log(final_summary)
+
+
         self.logger.log({
-            "type": "SUMMARY",
-            "total_runtime_sec": total_time
-        })
+    "type": "RESOURCE_USAGE",
+    "peak_agent_ram_mb": round(
+        self.peak_ram_mb,
+        2
+    )
+})
+        
 
         self.logger.close()
         print(
@@ -168,12 +228,24 @@ class CoreRunner:
         if total_failures == 0:
             print(f"All tests passed in {total_time}")
             print("EXIT_CODE=0")
-            sys.exit(0)
+            return 0 
 
         print("Some tests failed")
         print("EXIT_CODE=1")
-        sys.exit(1)
-        
+        return 1
+    
+    def update_peak_ram(self):
+
+        current_ram_mb = (
+            self.process.memory_info().rss
+            / (1024 * 1024)
+        )
+
+        self.peak_ram_mb = max(
+            self.peak_ram_mb,
+            current_ram_mb
+        )
+            
 
         
 
@@ -194,12 +266,53 @@ if __name__ == "__main__":
         help="Run only a specific part"
     )
 
+    parser.add_argument("--analyse", action="store_true")
+
     args = parser.parse_args()
 
     runner = CoreRunner(
         args.config
     )
 
-    runner.run(
+    exit_code = runner.run(
         args.part
     )
+
+    if args.analyse:
+        analyzer = LogAnalyzer()
+        executive_summary = analyzer.analyze(runner.log_file_path, args.config)
+       
+
+        analysis_file = (
+        Path(runner.log_file_path)
+        .with_suffix(".analysis.txt")
+                    )
+        
+        
+
+        with open(analysis_file, "w") as f:
+            f.write(executive_summary)
+
+        print(executive_summary)
+
+
+        if runner.config['email']['enabled']:
+
+                sender = EmailSender(
+                runner.config["email"]
+            )
+
+                sender.send(
+                    subject="[JioPC] Test Analysis Report",
+                    body=executive_summary
+                )
+                print("Mail sent succesfully")
+
+
+
+        print(
+        f"Analysis saved to {analysis_file}"
+        ) 
+          
+
+    sys.exit(exit_code)

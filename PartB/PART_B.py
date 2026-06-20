@@ -23,7 +23,7 @@ class PartBTester:
 
 
 
-    def run(self, config_data, all_desktop_apps, desktop_folder_inventory ):
+    def run(self, config_data, all_desktop_apps):
 
         for i in config_data:
             start_time = time.time()
@@ -38,7 +38,7 @@ class PartBTester:
                 if exact_executable:
                     
                     #print(f"Appication Binary exists at {exact_executable}")
-                    result = self.health_check(i['app_name'],command, float(i['timeout']))
+                    result = self.health_check(i['app_name'],command, float(i['launch_timeout_s']))
                     total_time = time.time() - start_time
                     result ['executable_location'] = exact_executable
                     result['desktop_file'] = app_search_results['desktop_file']
@@ -67,7 +67,7 @@ class PartBTester:
             result["component"] = "B"
             self.logger.log(result)	
             #print(result)
-        summary = {'COMPONENT' : 'B', "TOTAL": len(config_data), "PASS" : self.PASS_B, "FAIL": self.FAIL_B, "DEGRADED": self.DEGRADED_B}
+        summary = {'component' : 'B', "TOTAL": len(config_data), "PASS" : self.PASS_B, "FAIL": self.FAIL_B, "DEGRADED": self.DEGRADED_B}
         self.logger.log(summary)
         	
                 

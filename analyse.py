@@ -3,6 +3,8 @@ import os
 
 from openai import OpenAI
 from dotenv import load_dotenv
+import yaml
+from pathlib import Path
 
 import argparse
 
@@ -45,10 +47,10 @@ class LogAnalyzer:
                 f"Missing environment variables: {', '.join(missing)}"
             )
 
-    def load_prompt(self):
+    def load_prompt(self, prompt_file):
 
         with open(
-            "prompts/analyze_log.txt",
+            prompt_file,
             "r",
             encoding="utf-8"
         ) as f:
@@ -65,9 +67,9 @@ class LogAnalyzer:
 
             return f.read()
 
-    def build_prompt(self, log_text):
+    def build_prompt(self, log_text, prompt_file):
 
-        prompt_template = self.load_prompt()
+        prompt_template = self.load_prompt(prompt_file)
 
         return f"""
 {prompt_template}
@@ -77,12 +79,15 @@ TEST LOG:
 {log_text}
 """
 
-    def analyze(self, log_path):
-
+    def analyze(self, log_path, config_path):
+        with open(config_path) as f:
+            config = yaml.safe_load(f)
+        
+        
         log_text = self.load_log(log_path)
 
         full_prompt = self.build_prompt(
-            log_text
+            log_text, config['analysis']['prompt_file']
         )
 
         response = self.client.chat.completions.create(
@@ -110,15 +115,31 @@ def main():
         help="Path to log file"
     )
 
+    parser.add_argument("--config", default="jiopc-agent.yaml")
+
     args = parser.parse_args()
 
     analyzer = LogAnalyzer()
 
     result = analyzer.analyze(
-        args.log
+        args.log, args.config
     )
 
     print(result)
+
+
+    analysis_file = (
+    Path(args.log)
+    .with_suffix(".analysis.txt")
+                )
+
+    with open(analysis_file, "w") as f:
+        f.write(result)
+
+    print(
+    f"Analysis saved to {analysis_file}"
+    ) 
+ 
 
 
 if __name__ == "__main__":

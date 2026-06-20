@@ -84,6 +84,7 @@ class PartCTester:
         final_summary = {
         "timestamp": datetime.now().isoformat(),
         "component":"C",
+        "TOTAL" : len(config_data),
         "type":"SUMMARY",
         "PASS":self.passed,
         "MISPLACED":self.misplaced,

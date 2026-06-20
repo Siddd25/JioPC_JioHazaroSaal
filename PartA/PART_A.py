@@ -40,7 +40,7 @@ class PartATester:
 
             result['website_name'] = site['name']
             result['url'] = site ['url']
-            result['COMPONENT'] = "A"
+            result['component'] = "A"
             result['test_name'] = "Website and Web App Testing"
             result['timestamp'] = datetime.now().isoformat()
 
@@ -48,7 +48,7 @@ class PartATester:
             #log_file.write(json.dumps(result) + "\n")
             self.logger.log(result)
 
-        summary = {'COMPONENT': "A", "type": 'summary', 'TOTAL': len(config_data), "PASS": self.PASS, "FAIL": self.FAIL, "BLOCKED" : self.BLOCKED, "SLOW" : self.SLOW}  
+        summary = {'component': "A", "type": 'summary', 'TOTAL': len(config_data), "PASS": self.PASS, "FAIL": self.FAIL, "BLOCKED" : self.BLOCKED, "SLOW" : self.SLOW}  
             
         self.logger.log(summary)
 
