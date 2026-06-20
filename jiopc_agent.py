@@ -2,6 +2,7 @@ from utils.logger import CommonLogger
 from PartA.PART_A import PartATester
 from PartB.PART_B import PartBTester
 from PartC.PART_C import PartCTester
+from utils.inventory import InventoryBuilder
 
 from pathlib import Path
 from datetime import datetime
@@ -43,6 +44,10 @@ class CoreRunner:
             self.log_file_path
         )
 
+        self.inventory_builder = InventoryBuilder()
+        self.all_desktop_apps = self.inventory_builder.CreateDesktopDatabase()
+        self.desktop_folder_apps = self.inventory_builder.Desktop_Directory_Apps()
+
     def run(self, part=None):
 
         print("Test Agent is Running......")
@@ -80,13 +85,13 @@ class CoreRunner:
                 elif p == "B":
 
                     part_b_summary = parts["B"].run(
-                        part_configs["B"]
+                        part_configs["B"], self.all_desktop_apps, self.desktop_folder_apps
                     )
 
                 elif p == "C":
 
                     part_c_summary = parts["C"].run(
-                        part_configs["C"]
+                        part_configs["C"], self.all_desktop_apps, self.desktop_folder_apps
                     )
 
 
@@ -119,7 +124,7 @@ class CoreRunner:
             print("Running Part B")
 
             part_b_summary = parts["B"].run(
-                part_configs["B"]
+                part_configs["B"], self.all_desktop_apps, self.desktop_folder_apps
             )
 
         elif part == "C":
@@ -127,7 +132,7 @@ class CoreRunner:
             print("Running Part C")
 
             part_c_summary = parts["C"].run(
-                part_configs["C"]
+                part_configs["C"], self.all_desktop_apps, self.desktop_folder_apps
             )
 
         total_time = round(

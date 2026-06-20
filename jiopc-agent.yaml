@@ -14,6 +14,7 @@ web_apps:
     url: https://www.chess.com
     timeout: 15
     load_threshold_ms: 2000
+    bot_detection_expected : False
 
     checks:
       - type: role_name
@@ -25,6 +26,7 @@ web_apps:
     url: https://www.jioaicloud.com
     timeout : 15
     load_threshold_ms: 2000
+    bot_detection_expected : False
 
 
     checks:
@@ -33,16 +35,17 @@ web_apps:
         value : "Experience JioAICloud"
 
 
-  - name : ChatGPT
-    url: https://www.chatgpt.com
+  - name : Khan Academy
+    url: https://www.khanacademy.org
     timeout : 15
     load_threshold_ms: 2000 
+    bot_detection_expected : True
 
 
     checks:
       - type : role_name
-        role : textbox
-        value: "Chat with ChatGPT"
+        role : heading
+        value: "Khan Academy boosts Scores!"
 
 
 

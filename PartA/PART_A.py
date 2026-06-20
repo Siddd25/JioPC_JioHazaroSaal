@@ -25,7 +25,8 @@ class PartATester:
                 site["url"],
                 site["checks"],
                 site["timeout"],
-                site["load_threshold_ms"]
+                site["load_threshold_ms"],
+                site["bot_detection_expected"]
             )
             if result.get("threshold_exceeded"):
                 self.SLOW+=1
@@ -145,7 +146,7 @@ class PartATester:
                 )
 
 
-    def test_website(self,url, checks, timeout,load_threshold_ms):
+    def test_website(self,url, checks, timeout,load_threshold_ms, bot_detect):
 
         with sync_playwright() as p:
 
@@ -178,9 +179,10 @@ class PartATester:
                 )
                 threshold_exceeded = (load_time_ms > load_threshold_ms)
 
-                if self.detect_bot_block(page):
+                if bot_detect:
+                    if self.detect_bot_block(page):
 
-                    return {
+                        return {
                         "status": "BLOCKED",
                         "detail": "Bot protection or CAPTCHA detected"
                     }
@@ -197,7 +199,8 @@ class PartATester:
                     "load_time_ms": load_time_ms,
                     "expected_UI_elements_present" : True,
                     "load_threshold_ms" : load_threshold_ms,
-                    "threshold_exceeded" : threshold_exceeded
+                    "threshold_exceeded" : threshold_exceeded,
+                    "detail": "Page loaded successfully and required UI elements verified"
 
                 }
                 

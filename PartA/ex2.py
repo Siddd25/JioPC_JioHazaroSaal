@@ -88,4 +88,4 @@ def test_website(url, checks, timeout):
 
 
 
-test_website("https://www.chatgpt.com",[],100000)
+test_website("https://www.khanacademy.org",[],100000)

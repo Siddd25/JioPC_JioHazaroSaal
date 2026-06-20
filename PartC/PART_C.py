@@ -11,9 +11,7 @@ class PartCTester:
 
     def __init__(self,logger):
         self.total_time = time.perf_counter()
-        self.all_desktop_apps = {}
-        self.folder_inventory = {}
-        self.desktop_root = Path.home() / "Desktop"
+
 
         self.passed = 0
         self.misplaced =0
@@ -23,19 +21,14 @@ class PartCTester:
         self.detail = ""
 
 
-        self.search_paths = [Path("/usr/share/applications"), Path.home() / ".local/share/applications"]
         self.log_file = logger
 
         	
         
 
 
-    def run(self,config_data):
-     
+    def run(self,config_data, all_desktop_apps, desktop_folder_inventory):
 
-           
-        self.CreateDesktopDatabase()
-        self.Desktop_Directory_Apps()
 
         for test in config_data:
             start_time = time.perf_counter()
@@ -43,7 +36,7 @@ class PartCTester:
             expected_category = test["expected_category"]
             expected_folder = test['expected_folder'].lower()
             
-            app = self.find_app(app_name.lower())
+            app = self.find_app(app_name.lower(), all_desktop_apps)
             
             if not app["found"]:
                 #print(app_name, "MISSING",".desktop does not exist on System")
@@ -60,7 +53,7 @@ class PartCTester:
         )
                 self.misplaced+=1
                 
-            elif app_name.lower() not in [x.lower() for x in self.folder_inventory.get(expected_folder, [])]:
+            elif app_name.lower() not in [x.lower() for x in desktop_folder_inventory.get(expected_folder, [])]:
                 #print(app_name, "MISPLACED", "Wrong desktop shortcut folder")
                 status = "MISPLACED"
                 detail = (
@@ -92,9 +85,9 @@ class PartCTester:
         "timestamp": datetime.now().isoformat(),
         "component":"C",
         "type":"SUMMARY",
-        "passed":self.passed,
-        "misplaced":self.misplaced,
-        "missing":self.missing
+        "PASS":self.passed,
+        "MISPLACED":self.misplaced,
+        "MISSING":self.missing
         }
 
         self.log_file.log(final_summary)
@@ -104,47 +97,12 @@ class PartCTester:
         #print(f"Total time taken for Part C analysis  is {total_duration}")
 
         return final_summary
-                
+                	
 
 
-    ####create a global dictionary at first so we dont have to loop everytime
-    def CreateDesktopDatabase(self):
-    ####create a global dictionary at first so we dont have to loop everytime
-        for path in self.search_paths:
-            if not path.exists():
-                continue
-            for desktop_file in path.glob("*.desktop"):
-                try:
-                    entry = DesktopEntry(str(desktop_file))
-                    name = entry.getName()
-                    
-                    if not name:
-                        continue
-                    self.all_desktop_apps [name.lower()] = {"categories":entry.getCategories(),
-                    "exec": entry.getExec(),
-                    "desktop_file": str(desktop_file)
-                    }
-                except Exception:
-                    pass
-
-    def Desktop_Directory_Apps(self):
-        for folder in self.desktop_root.iterdir():
-            if not folder.is_dir():
-                continue
-            self.folder_inventory[folder.name.lower()] = []
-            
-            for df in folder.glob("*.desktop"):
-                try:
-                    entry = DesktopEntry(str(df))
-                    self.folder_inventory[folder.name.lower()].append(entry.getName())
-                    
-                except:
-                    pass	
-
-
-    def find_app(self, app_name):
-            if app_name in self.all_desktop_apps:
-                return {"found" : True, **self.all_desktop_apps[app_name]}
+    def find_app(self, app_name, all_desktop_apps):
+            if app_name in all_desktop_apps:
+                return {"found" : True, **all_desktop_apps[app_name]}
             return {"found":False}
 
 
