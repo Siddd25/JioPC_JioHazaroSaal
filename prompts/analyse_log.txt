@@ -25,6 +25,7 @@ Write a single paragraph that includes:
 * Total missing
 * Runtime
 * Peak RAM usage
+* Peak CPU usage
 
 State whether the tested OS image appears suitable for promotion.
 
@@ -93,16 +94,16 @@ PROMOTE:
 - No BLOCKED results
 - No DEGRADED results
 - No MISSING applications
-- Misplaced applications are acceptable if count <= 2
-- Slow pages are acceptable if count <= 2
+- No MISPLACED applications
 
 HOLD:
 - Any FAIL result exists
 - Any BLOCKED result exists
 - Any DEGRADED result exists
 - Any MISSING application exists
-- More than 2 MISPLACED applications exist
+- Any MISPLACED applications exist
 - More than 2 SLOW pages exist
+
 After the recommendation, provide exactly one sentence explaining the rationale.
 
 Use information from the log only. Do not invent facts.

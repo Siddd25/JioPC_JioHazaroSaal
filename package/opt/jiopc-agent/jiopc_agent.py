@@ -272,8 +272,9 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--config",
-        required=True,
-        help="Path to YAML configuration"
+       
+        help="Path to YAML configuration", 
+        default="/opt/jiopc-agent/jiopc-agent.yaml"
     )
 
     parser.add_argument(
@@ -283,6 +284,7 @@ if __name__ == "__main__":
     )
 
     parser.add_argument("--analyse", action="store_true")
+
     parser.add_argument("--email", help="Enter the recipent's email id")
 
     args = parser.parse_args()

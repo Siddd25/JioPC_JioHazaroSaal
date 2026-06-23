@@ -1,3 +1,4 @@
+jio_agent_venv/
 myvenv/
 __pycache__/
 *.pyc

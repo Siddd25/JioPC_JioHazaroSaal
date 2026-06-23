@@ -1,0 +1,3 @@
+#!/bin/bash
+source /opt/jiopc-agent/venv/bin/activate
+python3 /opt/jiopc-agent/jiopc_agent.py "$@"

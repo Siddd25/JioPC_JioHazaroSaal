@@ -1,0 +1,6 @@
+python3 -m venv /opt/jiopc-agent/venv
+
+/opt/jiopc-agent/venv/bin/pip install -r \
+    /opt/jiopc-agent/requirements.txt
+
+/opt/jiopc-agent/venv/bin/playwright install chromium

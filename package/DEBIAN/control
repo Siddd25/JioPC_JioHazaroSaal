@@ -1,0 +1,10 @@
+Package: jiopc-agent
+Version: 1.0
+Section: utils
+Priority: optional
+Architecture: all
+Maintainer: Siddhesh Madkaikar
+Depends: python3,wmctrl
+Description: JioPC Automated Testing Agent
+ Automated testing agent for websites, applications,
+ desktop validation and LLM analysis.

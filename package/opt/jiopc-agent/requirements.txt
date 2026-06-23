@@ -1,0 +1,6 @@
+playwright
+PyYAML
+psutil
+python-dotenv
+pyxdg
+openai
