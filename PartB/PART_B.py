@@ -1,6 +1,8 @@
 from pathlib import Path
 from xdg.DesktopEntry import DesktopEntry
 import yaml
+import os 
+import signal
 import json
 from datetime import datetime
 import time
@@ -33,13 +35,15 @@ class PartBTester:
             if app_search_results["found"]:
                 
                 command = self.extract_exec(app_search_results["exec"])
+               
                 
                 exact_executable = shutil.which(command[0])
+               
                 if exact_executable:
                     
                     #print(f"Appication Binary exists at {exact_executable}")
                     result = self.health_check(i['app_name'],command, float(i['launch_timeout_s']))
-                    total_time = time.time() - start_time
+                    total_time = time.time() - start_time -2
                     result ['executable_location'] = exact_executable
                     result['expected_desktop_file_location'] = i['desktop_file']
                     result['actual_desktop_file_location'] = app_search_results['desktop_file']
@@ -97,13 +101,30 @@ class PartBTester:
             start = time.time()
 
             # Launch application
-            p = subprocess.Popen(command)
-
+            # p = subprocess.Popen(command)
+            p = subprocess.Popen(
+            command,
+            start_new_session=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+            
+            
             # Wait until both process and window appear
             process_found = False
             window_found = False
 
             while time.time() - start < timeout:
+
+                parent = psutil.Process(p.pid)
+
+                valid_pids = {parent.pid}
+
+                try:
+                    for child in parent.children(recursive=True):
+                        valid_pids.add(child.pid)
+                except Exception:
+                    pass
 
                 if psutil.pid_exists(p.pid):
                     process_found = True
@@ -112,11 +133,31 @@ class PartBTester:
                     output = subprocess.check_output(
                         ["wmctrl", "-lp"]
                     ).decode(errors="ignore")
+
+                    for line in output.splitlines():
+
+                        parts = line.split()
+
+                        if len(parts) < 5:
+                            continue
+
+                        try:
+                            window_pid = int(parts[2])
+
+                            if window_pid in valid_pids:
+
+                                # print(
+                                #     "Window detected:",
+                                #     " ".join(parts[4:])
+                                # )
+
+                                window_found = True
+                                break
+
+                        except Exception:
+                            pass
+                                        
                     
-                    for app_name_token in app_name.lower().split():
-                        if app_name_token in output.lower():
-                            window_found = True
-                            break
 
                 except Exception:
                     pass
@@ -125,6 +166,11 @@ class PartBTester:
                     break
 
                 time.sleep(0.5)
+            
+            launch_time_ms = round(
+            (time.time() -start) * 1000,
+            2
+        )
 
             if not process_found:
                 return {
@@ -167,6 +213,7 @@ class PartBTester:
                 "app_name": app_name,
                 "actual_process_name": process.name(),
                 "window_detected": True,
+                "launch_time_ms": launch_time_ms,
                 "status": "PASS",
                 "rss_mb": round(rss_mb, 2),
                 "cpu_percent": cpu
@@ -190,49 +237,73 @@ class PartBTester:
 
         finally:
 
+            # if p is not None:
+
+            #     # Close window politely
+            #     try:
+            #         subprocess.run(
+            #             ["wmctrl", "-c", app_name],
+            #             stdout=subprocess.DEVNULL,
+            #             stderr=subprocess.DEVNULL
+            #         )
+            #         time.sleep(1)
+            #     except Exception:
+            #         pass
+
+            #     # Kill launcher + children
+            #     try:
+            #         parent = psutil.Process(p.pid)
+
+            #         children = parent.children(recursive=True)
+
+            #         for child in children:
+            #             try:
+            #                 child.terminate()
+            #             except Exception:
+            #                 pass
+
+            #         try:
+            #             parent.terminate()
+            #         except Exception:
+            #             pass
+
+            #         gone, alive = psutil.wait_procs(
+            #             children + [parent],
+            #             timeout=3
+            #         )
+
+            #         for proc in alive:
+            #             try:
+            #                 proc.kill()
+            #             except Exception:
+            #                 pass
+
+            #     except Exception:
+            #         pass
             if p is not None:
 
-                # Close window politely
                 try:
-                    subprocess.run(
-                        ["wmctrl", "-c", app_name],
-                        stdout=subprocess.DEVNULL,
-                        stderr=subprocess.DEVNULL
+
+                    os.killpg(
+                        os.getpgid(p.pid),
+                        signal.SIGTERM
                     )
-                    time.sleep(1)
-                except Exception:
-                    pass
 
-                # Kill launcher + children
-                try:
-                    parent = psutil.Process(p.pid)
-
-                    children = parent.children(recursive=True)
-
-                    for child in children:
-                        try:
-                            child.terminate()
-                        except Exception:
-                            pass
+                    time.sleep(2)
 
                     try:
-                        parent.terminate()
-                    except Exception:
+                        os.killpg(
+                            os.getpgid(p.pid),
+                            signal.SIGKILL
+                        )
+                    except ProcessLookupError:
                         pass
-
-                    gone, alive = psutil.wait_procs(
-                        children + [parent],
-                        timeout=3
-                    )
-
-                    for proc in alive:
-                        try:
-                            proc.kill()
-                        except Exception:
-                            pass
 
                 except Exception:
                     pass
+
+                # Cooldown before next test
+                time.sleep(2)
                 
             
   

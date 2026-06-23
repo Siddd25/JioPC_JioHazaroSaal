@@ -99,6 +99,7 @@ web_apps:
 
         #PART B
 native_apps:
+
   - app_name : mpv Media Player
     process_name: mpvmediaplayer
     launch_timeout_s: 10

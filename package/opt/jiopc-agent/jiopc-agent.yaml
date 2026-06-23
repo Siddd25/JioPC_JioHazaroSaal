@@ -99,6 +99,7 @@ web_apps:
 
         #PART B
 native_apps:
+
   - app_name : mpv Media Player
     process_name: mpvmediaplayer
     launch_timeout_s: 10
@@ -217,11 +218,8 @@ desktop_presence:
 
     # Email details to email test results 
 email:
-
-  enabled: false
-  
   sender : jiopc331@gmail.com
-  recipent: siddheshmadkaikar25@gmail.com
+
 
   
 
