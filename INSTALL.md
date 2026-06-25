@@ -94,7 +94,7 @@ python analyse.py \
 
 # Option 2: Install Debian Package
 
-## 1. Install Package
+## 1. Install Package (available in packaging/ in repo)
 
 ```bash
 sudo apt install ./jiopc-agent_1.0_all.deb
