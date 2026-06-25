@@ -146,10 +146,7 @@ class PartBTester:
 
                             if window_pid in valid_pids:
 
-                                # print(
-                                #     "Window detected:",
-                                #     " ".join(parts[4:])
-                                # )
+                              
 
                                 window_found = True
                                 break
@@ -236,50 +233,6 @@ class PartBTester:
             }
 
         finally:
-
-            # if p is not None:
-
-            #     # Close window politely
-            #     try:
-            #         subprocess.run(
-            #             ["wmctrl", "-c", app_name],
-            #             stdout=subprocess.DEVNULL,
-            #             stderr=subprocess.DEVNULL
-            #         )
-            #         time.sleep(1)
-            #     except Exception:
-            #         pass
-
-            #     # Kill launcher + children
-            #     try:
-            #         parent = psutil.Process(p.pid)
-
-            #         children = parent.children(recursive=True)
-
-            #         for child in children:
-            #             try:
-            #                 child.terminate()
-            #             except Exception:
-            #                 pass
-
-            #         try:
-            #             parent.terminate()
-            #         except Exception:
-            #             pass
-
-            #         gone, alive = psutil.wait_procs(
-            #             children + [parent],
-            #             timeout=3
-            #         )
-
-            #         for proc in alive:
-            #             try:
-            #                 proc.kill()
-            #             except Exception:
-            #                 pass
-
-            #     except Exception:
-            #         pass
             if p is not None:
 
                 try:
