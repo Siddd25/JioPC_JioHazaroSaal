@@ -15,7 +15,6 @@ analysis:
                #PART A
 web_apps:
   - name: Chess.com
-    desktop_file :  
     url: https://www.chess.com
     timeout: 15
     load_threshold_ms: 2000

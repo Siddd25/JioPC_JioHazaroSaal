@@ -74,7 +74,8 @@ class PartCTester:
             record = {
                 "timestamp": datetime.now().isoformat(),
                 "component": "C",
-                "test_name": app_name,
+                "test_name": "App presence Testing",
+                "app_name" : app_name,
                 "result": status,
                 "duration_ms": duration_ms,
                 "detail_message": detail
@@ -82,10 +83,9 @@ class PartCTester:
             self.log_file.log(record)
 
         final_summary = {
-        "timestamp": datetime.now().isoformat(),
         "component":"C",
+        "type":"summary",
         "TOTAL" : len(config_data),
-        "type":"SUMMARY",
         "PASS":self.passed,
         "MISPLACED":self.misplaced,
         "MISSING":self.missing

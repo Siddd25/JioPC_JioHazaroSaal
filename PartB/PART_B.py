@@ -44,6 +44,7 @@ class PartBTester:
                     #print(f"Appication Binary exists at {exact_executable}")
                     result = self.health_check(i['app_name'],command, float(i['launch_timeout_s']))
                     total_time = time.time() - start_time -2
+                    result["test_name"] = "Native App Health Testing"
                     result ['executable_location'] = exact_executable
                     result['expected_desktop_file_location'] = i['desktop_file']
                     result['actual_desktop_file_location'] = app_search_results['desktop_file']
@@ -67,13 +68,13 @@ class PartBTester:
                 result = {'app_name': i["app_name"],'expected_desktop_file_location':i['desktop_file'], "status" : "FAIL", 'detail':"App not found on system"} 
                 total_time = time.time() - start_time
                 self.FAIL_B+=1
-            result['total_time'] = total_time
+            result['total_test_time_s'] = total_time
             
             result["timestamp"] = datetime.now().isoformat()
             result["component"] = "B"
             self.logger.log(result)	
             #print(result)
-        summary = {'component' : 'B', "TOTAL": len(config_data), "PASS" : self.PASS_B, "FAIL": self.FAIL_B, "DEGRADED": self.DEGRADED_B}
+        summary = {'component' : 'B', "type" : "summary", "TOTAL": len(config_data), "PASS" : self.PASS_B, "FAIL": self.FAIL_B, "DEGRADED": self.DEGRADED_B}
         self.logger.log(summary)
         	
                 
