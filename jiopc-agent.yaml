@@ -9,7 +9,7 @@ test_agent:
   - C
 
 analysis: 
-  prompt_file : ./prompts/analyse_log.txt
+  prompt_file_path : ./prompts/analyse_log.txt
 
   
                #PART A

@@ -87,7 +87,7 @@ TEST LOG:
         log_text = self.load_log(log_path)
 
         full_prompt = self.build_prompt(
-            log_text, config['analysis']['prompt_file']
+            log_text, config['analysis']['prompt_file_path']
         )
 
         response = self.client.chat.completions.create(

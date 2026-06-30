@@ -1,3 +1,252 @@
+# Core Runner Architecture
+
+## Objective
+
+The Core Runner (`jiopc_agent.py`) serves as the central orchestration layer of the JioPC Automated Testing Agent. It is responsible for coordinating all testing components, managing execution flow, collecting system-wide metrics, generating structured logs, and optionally invoking post-execution analysis and email reporting.
+
+---
+
+# Design Choice: Python
+
+The project is implemented in **Python 3.12**.
+
+Python was selected for the following reasons:
+
+- Rich ecosystem for automation (`playwright`, `psutil`, `subprocess`)
+- Native support for Linux process and filesystem operations
+- Excellent YAML and JSON processing libraries
+- Cross-platform portability
+- Rapid prototyping and maintainability
+- Easy integration with REST-based LLM APIs
+- Extensive support for concurrent execution using threads
+
+These capabilities make Python well suited for building an extensible automated testing framework with minimal external dependencies.
+
+---
+
+# Architecture
+
+```text
+                    YAML Configuration
+                           │
+                           ▼
+                  Configuration Loader
+                           │
+                           ▼
+               Desktop Inventory Builder
+                           │
+                           ▼
+                  Core Runner (Controller)
+                           │
+        ┌──────────────────┼──────────────────┐
+        ▼                  ▼                  ▼
+   Part A Tester      Part B Tester      Part C Tester
+ (Web Validation)   (Native Apps)    (Desktop Presence)
+        │                  │                  │
+        └──────────────────┼──────────────────┘
+                           ▼
+                Structured JSON Logging
+                           │
+                           ▼
+                  Final Summary Generation
+                           │
+                           ▼
+             Resource Usage Monitoring Thread
+                           │
+                           ▼
+               Optional LLM Log Analysis
+                           │
+                           ▼
+               Optional Email Notification
+```
+
+---
+
+# Component Responsibilities
+
+## Configuration Loader
+
+- Reads the YAML configuration file.
+- Loads execution order.
+- Loads component-specific configuration.
+- Configures logging directory.
+
+---
+
+## Desktop Inventory Builder
+
+Before executing any tests, the agent builds two inventories:
+
+1. **Desktop Application Inventory**
+   - Installed applications
+   - Desktop entries
+   - Categories
+   - Executables
+
+2. **Desktop Folder Inventory**
+   - Applications grouped by desktop folder
+   - Used for Part C validation
+
+These inventories are generated once and shared across all components to avoid redundant filesystem scans.
+
+---
+
+## Core Runner
+
+The Core Runner is responsible for:
+
+- Executing test components in the configured order
+- Supporting execution of individual components
+- Managing execution timing
+- Aggregating component summaries
+- Computing final statistics
+- Determining exit status
+
+---
+
+## Component Execution
+
+Each testing component is implemented independently.
+
+### Part A
+
+Website and Web Application Validation
+
+Outputs:
+
+- PASS
+- FAIL
+- BLOCKED
+- SLOW
+
+---
+
+### Part B
+
+Native Application Launch Validation
+
+Outputs:
+
+- PASS
+- FAIL
+- DEGRADED
+
+---
+
+### Part C
+
+Desktop Presence Validation
+
+Outputs:
+
+- PASS
+- MISPLACED
+- MISSING
+
+---
+
+## Resource Monitoring
+
+A dedicated background thread monitors the agent's own resource consumption throughout execution.
+
+Collected metrics include:
+
+- Peak Resident Set Size (RSS)
+- Peak CPU utilization
+
+The monitoring thread operates independently from the test execution thread to avoid blocking component execution.
+
+After all testing completes, these metrics are appended to the execution log.
+
+---
+
+## Structured Logging
+
+Every component generates newline-delimited JSON (JSONL) logs.
+
+The Core Runner additionally records:
+
+- Final execution summary
+- Resource usage
+- Total runtime
+
+This structured format enables automated post-processing and LLM-based analysis.
+
+---
+
+## Optional LLM Analysis
+
+When the `--analyse` option is supplied:
+
+1. The generated execution log is read.
+2. A configurable prompt template is loaded.
+3. The prompt and log are submitted to an OpenAI-compatible API.
+4. An executive summary is generated.
+5. The report is saved alongside the execution log.
+
+---
+
+## Optional Email Delivery
+
+When the `--email` option is specified:
+
+- The generated executive summary is sent using SMTP.
+- SMTP credentials are supplied through environment variables.
+- Email delivery is independent of the testing pipeline.
+
+---
+
+# Concurrency Model
+
+The agent uses a lightweight multithreaded architecture.
+
+Main thread:
+
+- Executes Parts A, B and C
+- Generates summaries
+- Invokes optional analysis
+
+Background thread:
+
+- Monitors RAM usage
+- Monitors CPU usage
+
+This separation minimizes monitoring overhead while ensuring accurate resource measurements.
+
+---
+
+# Design Decisions
+
+- Python chosen for rapid development and strong automation ecosystem.
+- Modular architecture allows each testing component to evolve independently.
+- Desktop inventories are generated once and reused across components.
+- Configuration-driven execution order avoids hardcoded workflows.
+- Background resource monitoring minimizes impact on test execution.
+- Structured JSON logging enables downstream processing and LLM summarization.
+- LLM analysis and email delivery remain optional, keeping the core testing pipeline independent of external services.
+
+---
+
+# Assumptions
+
+- YAML configuration is valid.
+- Desktop inventories can be successfully generated.
+- The Linux desktop environment is available.
+- Required dependencies are installed.
+- Network connectivity is available when LLM analysis or website validation is requested.
+
+---
+
+# Limitations
+
+- Components execute sequentially; parallel execution is not currently implemented.
+- Resource monitoring measures the agent process only.
+- Email delivery requires valid SMTP credentials.
+- LLM analysis depends on an accessible OpenAI-compatible API.
+
+---
+<br>
+
 # Part A – Website and Web Application Testing Design
 
 ## Objective
@@ -615,6 +864,17 @@ test_agent:
 
 ---
 
+## analysis
+ ```yaml
+ analysis:
+   prompt_file_path: ./prompts/analyse_log.txt
+
+```
+| Field | Description |
+|--------|-------------|
+| prompt_file_path | Relative File path for the prompt file, used by LLM analysis layer |
+---
+
 ## web_apps (Part A)
 
 Defines websites to validate.
@@ -661,6 +921,7 @@ Defines applications to launch.
 native_apps:
 
 - app_name: Calculator
+  process_name: calculator
   desktop_file: /usr/share/applications/org.gnome.Calculator.desktop
   launch_timeout_s: 10
 ```
@@ -668,6 +929,7 @@ native_apps:
 | Field | Description |
 |--------|-------------|
 | app_name | Application name |
+| process_name| process name when the program/ app executes|
 | desktop_file | Expected desktop entry location |
 | launch_timeout_s | Maximum time allowed for application launch |
 
@@ -680,9 +942,9 @@ Defines desktop validation rules.
 ```yaml
 desktop_presence:
 
-- name: Calculator
-  expected_category: Utility
-  expected_desktop_folder: Utilities
+- name: LibreOffice Calc
+  expected_category: Office
+  expected_desktop_folder: Productivity
 ```
 
 | Field | Description |
