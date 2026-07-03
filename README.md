@@ -70,6 +70,13 @@ The agent generates **newline-delimited JSON (JSONL)** logs.
 Each line represents an independent execution event and can be parsed individually.
 
 ---
+
+# Runtime Behavior
+
+After installation, the agent performs only user-space, read-only operations. It does not require root privileges, install software, modify system files, or write outside the configured user log directory.
+
+---
+
 <br>
 
 # Core Runner (`jiopc_agent.py`)

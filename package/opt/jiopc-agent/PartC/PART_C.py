@@ -75,7 +75,7 @@ class PartCTester:
                 "timestamp": datetime.now().isoformat(),
                 "component": "C",
                 "test_name": "App presence Testing",
-                "app_name" : app_name,
+                "app_name": app_name,
                 "result": status,
                 "duration_ms": duration_ms,
                 "detail_message": detail

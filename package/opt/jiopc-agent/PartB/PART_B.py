@@ -74,7 +74,7 @@ class PartBTester:
             result["component"] = "B"
             self.logger.log(result)	
             #print(result)
-        summary = {'component' : 'B', "TOTAL": len(config_data), "PASS" : self.PASS_B, "FAIL": self.FAIL_B, "DEGRADED": self.DEGRADED_B}
+        summary = {'component' : 'B', "type" : "summary", "TOTAL": len(config_data), "PASS" : self.PASS_B, "FAIL": self.FAIL_B, "DEGRADED": self.DEGRADED_B}
         self.logger.log(summary)
         	
                 
