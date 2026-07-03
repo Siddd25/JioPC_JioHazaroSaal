@@ -1,0 +1,57 @@
+**EXECUTIVE SUMMARY**  
+A total of **32 tests** were executed across all components. **21 passed**, **2 failed**, **1 blocked**, **0 degraded**, **8 misplaced**, and **0 missing**. The overall runtime was **123.32 s** with a peak RAM usage of **59.78 MB** and peak CPU usage of **2.0 %**. Given the presence of failures, a blocked site, and numerous misplaced applications, the OS image is **not suitable for promotion** in its current state.  
+
+---
+
+### ANOMALIES AND FAILURES  
+
+**Part A – Website & Web App Testing**  
+| Status | Site | Reason | Impact |
+|--------|------|--------|--------|
+| **FAIL** | Khan Academy (`https://www.khanacademy.org`) | Locator timeout while waiting for heading “Khan Academy boosts Scores!” (5 s) | Critical UI element not rendered; user may perceive the page as broken or incomplete. |
+| **FAIL** | Jio Saavn (`https://jiosaavn.com`) | HTTP 403 – access denied | Service unavailable to users; prevents music streaming. |
+| **BLOCKED** | Scraping Course (`https://www.scrapingcourse.com/cloudflare-challenge`) | Bot protection / CAPTCHA detected | Automated testing cannot verify the site; may hide further issues if the site is required. |
+| **SLOW** | *none* | – | – |
+
+**Part B – Native Application Testing**  
+No anomalies detected. All 10 native‑app health checks **PASS** and there are **no DEGRADED** results.  
+
+**Part C – Desktop Presence & Categorization Testing**  
+| Result | Application | Expected vs. Actual | Impact |
+|--------|-------------|---------------------|--------|
+| **MISPLACED** | duolingo | Expected category = Education, actual = Utilities | Users searching under Education will not find the app. |
+| **MISPLACED** | LibreOffice Writer | Expected folder = productivity, not found | Disrupts productivity suite discoverability. |
+| **MISPLACED** | Disk Usage Analyzer | Expected folder = productivity, not found | Hides system‑utility from intended menu. |
+| **MISPLACED** | Document Viewer | Expected folder = productivity, not found | Affects quick access to document viewing. |
+| **MISPLACED** | Thunar File Manager | Expected folder = productivity, not found | File manager may be hard to locate. |
+| **MISPLACED** | Fonts | Expected folder = productivity, not found | Font management tool misplaced. |
+| **MISPLACED** | LibreOffice Draw | Expected folder = productivity, not found | Draw component of LibreOffice hidden. |
+| **MISPLACED** | qpdfview | Expected folder = productivity, not found | PDF viewer misplaced. |
+| **MISPLACED** | LibreOffice Writer (duplicate entry) – already listed. | – | – |
+| **MISPLACED** | (others as above) | – | – |
+| **MISSING** | *none* | – | – |
+
+---
+
+### PATTERNS AND CORRELATIONS  
+
+* **Category‑group misplacements** – Eight of the misplaced items belong to the **productivity** family (LibreOffice suite, Thunar, Disk Usage Analyzer, Document Viewer, Fonts, Draw, qpdfview). This suggests a systematic issue with desktop‑file metadata or folder assignment for productivity apps.  
+* **Educational/Media web failures** – Both FAIL results are from sites that provide **educational or media content** (Khan Academy, Jio Saavn). The blocked site also uses aggressive bot protection, indicating that external services with stricter access controls are problematic for the current environment.  
+* No repeated performance (SLOW) problems and no degraded native apps were observed.  
+
+---
+
+### RISK ASSESSMENT  
+
+**Overall Risk: MEDIUM**  
+*Web‑app failures* (2 FAIL, 1 BLOCKED) could prevent users from accessing critical learning or entertainment services.  
+*Desktop misplacements* (8 MISPLACED) degrade user experience by making productivity tools harder to discover, but they do not break core functionality.  
+Native apps are healthy, limiting the severity.  
+
+---
+
+### RECOMMENDATION  
+
+**HOLD**  
+
+*Rationale: The presence of failed and blocked web‑app tests together with a high number of misplaced desktop entries indicates functional and usability regressions that must be resolved before promotion.*
