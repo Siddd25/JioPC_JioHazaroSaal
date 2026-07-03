@@ -155,7 +155,7 @@ jiopc-agent --part B
 jiopc-agent --part C
 ```
 
-Run with a custom YAML file:
+Run with a custom YAML file (following the format specified in DESIGN.md):
 
 ```bash
 jiopc-agent --config my-config.yaml
