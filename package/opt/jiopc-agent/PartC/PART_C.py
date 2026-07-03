@@ -76,7 +76,7 @@ class PartCTester:
                 "component": "C",
                 "test_name": "App presence Testing",
                 "app_name": app_name,
-                "result": status,
+                "status": status,
                 "duration_ms": duration_ms,
                 "detail_message": detail
             }
