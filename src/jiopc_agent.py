@@ -18,6 +18,12 @@ import threading
 
 import re
 
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+DEFAULT_CONFIG = PROJECT_ROOT / "jiopc-agent.yaml"
+
 class CoreRunner:
 
     def __init__(self, config_path):
@@ -273,7 +279,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--config",
         required=True,
-        help="Path to YAML configuration"
+        help="Path to YAML configuration",
+        default= str(DEFAULT_CONFIG)
     )
 
     parser.add_argument(

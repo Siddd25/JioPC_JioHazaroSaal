@@ -5,6 +5,12 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import yaml
 from pathlib import Path
+from pathlib import Path
+from utils.email_sender import EmailSender
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+DEFAULT_CONFIG = PROJECT_ROOT / "jiopc-agent.yaml"
 
 import argparse
 
@@ -115,7 +121,8 @@ def main():
         help="Path to log file"
     )
 
-    parser.add_argument("--config", default="jiopc-agent.yaml")
+    parser.add_argument("--config", default=str(DEFAULT_CONFIG))
+    
 
     args = parser.parse_args()
 
@@ -139,6 +146,7 @@ def main():
     print(
     f"Analysis saved to {analysis_file}"
     ) 
+   
  
 
 
