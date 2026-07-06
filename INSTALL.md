@@ -154,6 +154,11 @@ Run with analysis:
 jiopc-agent --analyse
 ```
 
+Send executive summary email to specified recipient after LLM analysis :
+```bash
+jiopc-agent --analyse --email <recipient_email>
+```
+
 Run a specific component:
 
 ```bash

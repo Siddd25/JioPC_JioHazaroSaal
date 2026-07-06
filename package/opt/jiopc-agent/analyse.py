@@ -8,7 +8,7 @@ from pathlib import Path
 from pathlib import Path
 from utils.email_sender import EmailSender
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent
 
 DEFAULT_CONFIG = PROJECT_ROOT / "jiopc-agent.yaml"
 
@@ -92,8 +92,15 @@ TEST LOG:
         
         log_text = self.load_log(log_path)
 
+        config_path = Path(config_path).resolve() 
+
+        prompt_path = (
+        config_path.parent /
+        config["analysis"]["prompt_file_path"]
+    ).resolve()
+
         full_prompt = self.build_prompt(
-            log_text, config['analysis']['prompt_file_path']
+            log_text, prompt_path
         )
 
         response = self.client.chat.completions.create(

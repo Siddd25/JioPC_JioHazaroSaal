@@ -20,7 +20,7 @@ import re
 
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent
 
 DEFAULT_CONFIG = PROJECT_ROOT / "jiopc-agent.yaml"
 
@@ -278,7 +278,6 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--config",
-        required=True,
         help="Path to YAML configuration",
         default= str(DEFAULT_CONFIG)
     )

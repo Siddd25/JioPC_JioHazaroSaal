@@ -20,9 +20,7 @@ import re
 
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-DEFAULT_CONFIG = PROJECT_ROOT / "jiopc-agent.yaml"
 
 class CoreRunner:
 
@@ -280,7 +278,7 @@ if __name__ == "__main__":
         "--config",
         required=True,
         help="Path to YAML configuration",
-        default= str(DEFAULT_CONFIG)
+        
     )
 
     parser.add_argument(
