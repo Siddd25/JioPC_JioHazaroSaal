@@ -20,7 +20,7 @@
 
 ```bash
 git clone <repository-url>
-cd jiopc-agent
+cd JioPC_JioHazaroSaal
 ```
 
 ## 2. Create Virtual Environment
