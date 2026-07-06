@@ -14,7 +14,7 @@ Requirements:
 
 1. EXECUTIVE SUMMARY
 
-Write a single paragraph that includes:
+Write a single txt paragraph (Do not use MARKDOWN) that includes:
 
 * Total tests executed
 * Total passed
