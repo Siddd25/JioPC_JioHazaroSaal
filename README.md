@@ -50,13 +50,13 @@ The prompt template can be modified without changing the source code, allowing d
 LLM analysis can be executed:
 
 ```bash
-python jiopc_agent.py --config jiopc-agent.yaml --analyse
+python src/jiopc_agent.py --config jiopc-agent.yaml --analyse
 ```
 
 or independently on an existing log file:
 
 ```bash
-python analyse.py \
+python src/analyse.py \
     --log ~/.local/share/jiopc/agent/test_run_<timestamp>.log \
     --config jiopc-agent.yaml
 ```
@@ -117,7 +117,7 @@ It is responsible for:
 ### Run Complete Test Suite
 
 ```bash
-python jiopc_agent.py --config jiopc-agent.yaml
+python src/jiopc_agent.py --config jiopc-agent.yaml
 ```
 
 ---
@@ -125,11 +125,11 @@ python jiopc_agent.py --config jiopc-agent.yaml
 ### Run Individual Components
 
 ```bash
-python jiopc_agent.py --config jiopc-agent.yaml --part A
+python src/jiopc_agent.py --config jiopc-agent.yaml --part A
 
-python jiopc_agent.py --config jiopc-agent.yaml --part B
+python src/jiopc_agent.py --config jiopc-agent.yaml --part B
 
-python jiopc_agent.py --config jiopc-agent.yaml --part C
+python src/jiopc_agent.py --config jiopc-agent.yaml --part C
 ```
 
 ---
@@ -137,7 +137,7 @@ python jiopc_agent.py --config jiopc-agent.yaml --part C
 ### Run Tests with LLM Analysis
 
 ```bash
-python jiopc_agent.py \
+python src/jiopc_agent.py \
     --config jiopc-agent.yaml \
     --analyse
 ```
@@ -147,7 +147,7 @@ python jiopc_agent.py \
 ### Run Tests with Email Delivery
 
 ```bash
-python jiopc_agent.py \
+python src/jiopc_agent.py \
     --config jiopc-agent.yaml \
     --analyse \
     --email recipient@example.com
@@ -823,7 +823,7 @@ analysis:
 Analyse an existing log file:
 
 ```bash
-python analyse.py \
+python src/analyse.py \
     --log ~/.local/share/jiopc/agent/test_run_<timestamp>.log \
     --config jiopc-agent.yaml
 ```
@@ -831,7 +831,7 @@ python analyse.py \
 Run the entire test suite followed by analysis:
 
 ```bash
-python jiopc_agent.py \
+python src/jiopc_agent.py \
     --config jiopc-agent.yaml \
     --analyse
 ```
@@ -839,7 +839,7 @@ python jiopc_agent.py \
 Generate the report and email it to a recipient:
 
 ```bash
-python jiopc_agent.py \
+python src/jiopc_agent.py \
     --config jiopc-agent.yaml \
     --analyse \
     --email recipient@example.com
