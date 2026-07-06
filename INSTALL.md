@@ -19,7 +19,7 @@
 ## 1. Clone Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Siddd25/JioPC_JioHazaroSaal
 cd JioPC_JioHazaroSaal
 ```
 
