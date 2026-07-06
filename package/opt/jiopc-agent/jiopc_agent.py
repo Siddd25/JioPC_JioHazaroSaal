@@ -18,6 +18,12 @@ import threading
 
 import re
 
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+DEFAULT_CONFIG = PROJECT_ROOT / "jiopc-agent.yaml"
+
 class CoreRunner:
 
     def __init__(self, config_path):
@@ -272,9 +278,9 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--config",
-       
-        help="Path to YAML configuration", 
-        default="/opt/jiopc-agent/jiopc-agent.yaml"
+        required=True,
+        help="Path to YAML configuration",
+        default= str(DEFAULT_CONFIG)
     )
 
     parser.add_argument(
@@ -284,7 +290,6 @@ if __name__ == "__main__":
     )
 
     parser.add_argument("--analyse", action="store_true")
-
     parser.add_argument("--email", help="Enter the recipent's email id")
 
     args = parser.parse_args()

@@ -5,6 +5,12 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import yaml
 from pathlib import Path
+from pathlib import Path
+from utils.email_sender import EmailSender
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+DEFAULT_CONFIG = PROJECT_ROOT / "jiopc-agent.yaml"
 
 import argparse
 
@@ -29,14 +35,6 @@ class LogAnalyzer:
             base_url=self.base_url
         )
 
-        BASE_DIR = Path(__file__).resolve().parent
-
-        self.prompt_file = (
-            BASE_DIR
-            / "prompts"
-            / "analyse_log.txt"
-        )
-
     def validate_config(self):
 
         missing = []
@@ -57,7 +55,6 @@ class LogAnalyzer:
 
     def load_prompt(self, prompt_file):
 
-
         with open(
             prompt_file,
             "r",
@@ -77,13 +74,8 @@ class LogAnalyzer:
             return f.read()
 
     def build_prompt(self, log_text, prompt_file):
-        prompt_path = (
-        Path(__file__).resolve().parent
-        / prompt_file
-    )
 
-
-        prompt_template = self.load_prompt(prompt_path)
+        prompt_template = self.load_prompt(prompt_file)
 
         return f"""
 {prompt_template}
@@ -101,7 +93,7 @@ TEST LOG:
         log_text = self.load_log(log_path)
 
         full_prompt = self.build_prompt(
-            log_text, config['analysis']['prompt_file']
+            log_text, config['analysis']['prompt_file_path']
         )
 
         response = self.client.chat.completions.create(
@@ -129,7 +121,8 @@ def main():
         help="Path to log file"
     )
 
-    parser.add_argument("--config", default="jiopc-agent.yaml")
+    parser.add_argument("--config", default=str(DEFAULT_CONFIG))
+    
 
     args = parser.parse_args()
 
@@ -153,6 +146,7 @@ def main():
     print(
     f"Analysis saved to {analysis_file}"
     ) 
+   
  
 
 

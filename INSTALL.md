@@ -72,21 +72,21 @@ python src/jiopc_agent.py --config jiopc-agent.yaml
 Run a single component:
 
 ```bash
-python jiopc_agent.py --config jiopc-agent.yaml --part A
-python jiopc_agent.py --config jiopc-agent.yaml --part B
-python jiopc_agent.py --config jiopc-agent.yaml --part C
+python src/jiopc_agent.py --config jiopc-agent.yaml --part A
+python src/jiopc_agent.py --config jiopc-agent.yaml --part B
+python src/jiopc_agent.py --config jiopc-agent.yaml --part C
 ```
 
 Run tests and LLM analysis:
 
 ```bash
-python jiopc_agent.py --config jiopc-agent.yaml --analyse
+python src/jiopc_agent.py --config jiopc-agent.yaml --analyse
 ```
 
 Run standalone analysis on an existing log:
 
 ```bash
-python analyse.py \
+python src/analyse.py \
     --log ~/.local/share/jiopc/agent/test_run_<timestamp>.log
 ```
 

@@ -24,9 +24,7 @@ class EmailSender:
         self.sender = config["sender"]
         self.recipient = recipent
 
-        print("SMTP_SERVER =", repr(self.smtp_server))
-        print("SMTP_PORT =", repr(self.smtp_port))
-        print("SMTP_USERNAME =", repr(self.username))
+      
 
 
     def send(self, subject, body):
