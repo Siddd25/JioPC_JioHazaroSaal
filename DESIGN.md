@@ -64,30 +64,7 @@ These capabilities make Python well suited for building an extensible automated 
 
 # Component Responsibilities
 
-## Configuration Loader
 
-- Reads the YAML configuration file.
-- Loads execution order.
-- Loads component-specific configuration.
-- Configures logging directory.
-
----
-
-## Desktop Inventory Builder
-
-Before executing any tests, the agent builds two inventories:
-
-1. **Desktop Application Inventory**
-   - Installed applications
-   - Desktop entries
-   - Categories
-   - Executables
-
-2. **Desktop Folder Inventory**
-   - Applications grouped by desktop folder
-   - Used for Part C validation
-
-These inventories are generated once and shared across all components to avoid redundant filesystem scans.
 
 ---
 
@@ -738,6 +715,7 @@ MISSING
 
 The application's XDG categories are extracted from its `.desktop` file.
 
+This uses PyXDG for Desktop Entries.
 The expected category specified in the YAML configuration is compared against the application's registered categories.
 
 If the expected category is absent, the result is classified as:
@@ -813,6 +791,40 @@ After all applications are processed, a summary containing total PASS, MISPLACED
 - Folder validation depends on the accuracy of the generated desktop folder inventory.
 
 ---
+<br>
+
+## Utils
+### Desktop Inventory Builder
+
+Before executing any tests, the agent builds two inventories:
+
+1. **Desktop Application Inventory**
+   - Installed applications
+   - Desktop entries
+   - Categories
+   - Executables
+
+2. **Desktop Folder Inventory**
+   - Applications grouped by desktop folder
+   - Used for Part C validation
+
+These inventories are generated once and shared across all components to avoid redundant filesystem scans.
+
+uses - `PyXDG` Desktop Entry to scan file systems and make a dictionary of .desktop files
+
+### Logger
+
+Used by all components to log results into a common .log file. Structured log files created which use .json.
+
+### Email Sender
+
+Used to establish SMTP connection and send summary email to executive.
+Uses `smtplib` and `email.mime`
+
+
+---
+<br>
+
 # YAML Configuration Schema
 
 The agent is completely configuration-driven. All tests are defined in a single YAML configuration file.
@@ -974,3 +986,5 @@ export SMTP_PORT="587"
 export SMTP_USERNAME="example@gmail.com"
 export SMTP_PASSWORD="<app-password>"
 ```
+
+
